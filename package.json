@@ -1,7 +1,16 @@
 {
-  "name": "react-example",
-  "private": true,
-  "version": "0.0.0",
+  "name": "vexorion-grunt",
+  "version": "1.0.0",
+  "description": "VexorionGrunt real-time telemetry, architecture orchestrator and testing framework",
+  "author": "widodoprsd <widodoprsd@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prssbayu-oss/VexorionGrunt.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
