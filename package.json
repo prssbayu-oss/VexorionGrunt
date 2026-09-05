@@ -1,6 +1,6 @@
 {
   "name": "vexorion-grunt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "VexorionGrunt real-time telemetry, architecture orchestrator and testing framework",
   "author": "widodoprsd <widodoprsd@gmail.com>",
   "license": "MIT",
@@ -8,13 +8,18 @@
     "type": "git",
     "url": "git+https://github.com/prssbayu-oss/VexorionGrunt.git"
   },
+  "main": "cdn/vexorion.js",
+  "module": "cdn/vexorion.esm.js",
+  "jsdelivr": "cdn/vexorion.min.js",
+  "unpkg": "cdn/vexorion.min.js",
   "publishConfig": {
     "access": "public"
   },
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build:cdn": "esbuild src/cdn-entry.js --bundle --format=iife --outfile=cdn/vexorion.js && esbuild src/cdn-entry.js --bundle --minify --format=iife --outfile=cdn/vexorion.min.js && esbuild src/cdn-entry.js --bundle --format=esm --outfile=cdn/vexorion.esm.js && esbuild src/cdn-entry.js --bundle --minify --format=esm --outfile=cdn/vexorion.esm.min.js",
+    "build": "npm run build:cdn && vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "start": "node dist/server.cjs",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
