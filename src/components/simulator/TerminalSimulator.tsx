@@ -8,6 +8,7 @@ import { PlaybackControls } from './PlaybackControls';
 import { CustomLogInjector } from './CustomLogInjector';
 import { TerminalWindow } from './TerminalWindow';
 import { RealtimeStreamBar } from './RealtimeStreamBar';
+import { RealtimeSuppressionRadar } from './RealtimeSuppressionRadar';
 import { useRealtimeStream } from '../../hooks/useRealtimeStream';
 
 interface TerminalSimulatorProps {
@@ -176,6 +177,11 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
   const cacheStats = vexorion.getRawConfig().getCacheStats();
   const isComplete = !isAutoStream && currentIndex >= processedLogs.length && processedLogs.length > 0;
 
+  // Real-time identification of the latest intercepted and suppressed log
+  const latestSuppressedLog = isHooked
+    ? [...visibleLogs].reverse().find((l) => l.suppressed) || null
+    : null;
+
   return (
     <div className="w-full max-w-full space-y-6 overflow-x-hidden">
       {/* 1. Real-Time Daemon Mode Switcher & Stream Bar */}
@@ -211,7 +217,16 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
         cacheStats={cacheStats}
       />
 
-      {/* 4. Playback Controls Component (Manual mode only) */}
+      {/* 4. Real-Time Visual Suppression Stream Radar & Activity Waveform */}
+      <RealtimeSuppressionRadar
+        latestSuppressedLog={latestSuppressedLog}
+        totalSuppressed={suppressedCount}
+        totalAllowed={cleanCount}
+        isHooked={isHooked}
+        isAutoStream={isAutoStream}
+      />
+
+      {/* 5. Playback Controls Component (Manual mode only) */}
       {!isAutoStream && (
         <PlaybackControls
           isPlaying={isPlaying}
@@ -235,12 +250,12 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
         />
       )}
 
-      {/* 5. Custom Log Injector Component */}
+      {/* 6. Custom Log Injector Component */}
       {!isAutoStream && showInjector && (
         <CustomLogInjector onInject={handleInjectCustomLog} />
       )}
 
-      {/* 6. Terminal Display Windows Component */}
+      {/* 7. Terminal Display Windows Component */}
       <div
         className={`w-full max-w-full grid gap-4 ${
           viewMode === 'split' ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'
@@ -256,6 +271,7 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
             isHooked={isHooked}
             isComplete={isComplete}
             totalPresetLength={isAutoStream ? visibleLogs.length : processedLogs.length}
+            latestSuppressedLog={latestSuppressedLog}
           />
         )}
 
@@ -269,6 +285,7 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
             isHooked={isHooked}
             isComplete={isComplete}
             totalPresetLength={isAutoStream ? visibleLogs.length : processedLogs.length}
+            latestSuppressedLog={latestSuppressedLog}
           />
         )}
       </div>
