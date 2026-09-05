@@ -1,8 +1,8 @@
 import React from 'react';
-import { Terminal, Settings2, CheckCircle2, Code2, Gauge, VolumeX, Sparkles, Server } from 'lucide-react';
+import { Terminal, Settings2, CheckCircle2, Code2, Gauge, VolumeX, Sparkles, Server, ShieldCheck } from 'lucide-react';
 import { useBackendStatus } from '../../hooks/useBackendStatus';
 
-export type ActiveTab = 'simulator' | 'config' | 'tests' | 'code' | 'benchmark';
+export type ActiveTab = 'simulator' | 'config' | 'tests' | 'code' | 'benchmark' | 'audit';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -27,7 +27,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'config', label: 'Configuration Studio', shortLabel: 'Config', icon: <Settings2 className="w-4 h-4 shrink-0" /> },
     { id: 'tests', label: 'Test Suite', shortLabel: 'Tests', icon: <CheckCircle2 className="w-4 h-4 shrink-0" /> },
     { id: 'code', label: 'Source & Architecture', shortLabel: 'Architecture', icon: <Code2 className="w-4 h-4 shrink-0" /> },
-    { id: 'benchmark', label: 'Benchmark & Cache', shortLabel: 'Benchmark', icon: <Gauge className="w-4 h-4 shrink-0" /> }
+    { id: 'benchmark', label: 'Benchmark & Cache', shortLabel: 'Benchmark', icon: <Gauge className="w-4 h-4 shrink-0" /> },
+    { id: 'audit', label: 'Repo Audit & Push', shortLabel: 'Audit', icon: <ShieldCheck className="w-4 h-4 shrink-0" /> }
   ];
 
   const suppressionRate = totalLogs > 0 ? Math.round((suppressedCount / totalLogs) * 100) : 0;

@@ -16,7 +16,7 @@ export const REPO_FILES: RepoFile[] = [
 
 /**
  * vexorion
- * https://github.com/developer/vexorion
+ * https://github.com/prssbayu-oss/VexorionGrunt
  *
  * Copyright (c) 2026 Vexorion
  * Licensed under the MIT license.

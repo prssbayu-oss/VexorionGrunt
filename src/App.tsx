@@ -6,6 +6,7 @@ import { ConfigStudio } from './components/config/ConfigStudio';
 import { TestSuiteRunner } from './components/tests/TestSuiteRunner';
 import { RepoExplorer } from './components/repo/RepoExplorer';
 import { BenchmarkPanel } from './components/benchmark/BenchmarkPanel';
+import { RepoAuditPanel } from './components/audit/RepoAuditPanel';
 import { SimulatedConfig, SimulatedLogger, SimulatedVexorion } from './lib/vexorion-core';
 
 export default function App() {
@@ -85,6 +86,10 @@ export default function App() {
 
         {activeTab === 'benchmark' && (
           <BenchmarkPanel />
+        )}
+
+        {activeTab === 'audit' && (
+          <RepoAuditPanel />
         )}
       </main>
 
