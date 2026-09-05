@@ -872,7 +872,7 @@ export class VexorionRealtimeDaemon {
 }`
   },
   {
-    path: 'src/lib/server/controller.js',
+    path: 'server/internal/controller.js',
     name: 'controller.js',
     category: 'backend',
     description: 'Central entry point orchestrating EventBus, Logger, and AuthManager with private class fields',
@@ -944,7 +944,7 @@ export class ServerCentralController {
 export const serverController = new ServerCentralController();`
   },
   {
-    path: 'src/lib/server/eventBus.js',
+    path: 'server/internal/eventBus.js',
     name: 'eventBus.js',
     category: 'backend',
     description: 'Internal Event Bus with priority weighting, wildcard subscribers, and history using private fields (#)',
@@ -984,7 +984,7 @@ export const serverController = new ServerCentralController();`
 }`
   },
   {
-    path: 'src/lib/server/logger.js',
+    path: 'server/internal/logger.js',
     name: 'logger.js',
     category: 'backend',
     description: 'Internal structured server logger with level gating and telemetry integration using private fields (#)',
@@ -1022,7 +1022,7 @@ export const serverController = new ServerCentralController();`
 }`
   },
   {
-    path: 'src/lib/server/auth.js',
+    path: 'server/internal/auth.js',
     name: 'auth.js',
     category: 'backend',
     description: 'Internal RBAC authentication and session token manager using private fields (#)',

@@ -1,5 +1,5 @@
 /**
- * @file src/lib/server/auth.js
+ * @file server/internal/auth.js
  * High-security internal authentication and role-based authorization (RBAC) manager.
  * Uses private class fields and private methods (#) for complete internal state encapsulation.
  * Integrates with ServerEventBus and ServerLogger to audit security events and state changes.

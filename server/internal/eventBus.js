@@ -1,5 +1,5 @@
 /**
- * @file src/lib/server/eventBus.js
+ * @file server/internal/eventBus.js
  * High-performance internal event bus with priority queues, wildcard listeners, and history tracking.
  * Strictly uses private class fields and private methods (#) for complete internal state encapsulation.
  */

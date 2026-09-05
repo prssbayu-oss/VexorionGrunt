@@ -9,7 +9,7 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { defaultVexorionSystem } from './server/vexorion/index.js';
-import { serverController } from './src/lib/server/controller.js';
+import { serverController } from './server/internal/controller.js';
 
 async function startServer() {
   const app = express();

@@ -1,5 +1,5 @@
 /**
- * @file src/lib/server/logger.js
+ * @file server/internal/logger.js
  * High-performance internal structured logger for server subsystems.
  * Uses private class fields and private methods (#) for complete internal state encapsulation.
  * Integrates with ServerEventBus to publish log events and maintain telemetry metrics.

@@ -1,5 +1,5 @@
 (() => {
-  // src/lib/server/eventBus.js
+  // server/internal/eventBus.js
   var ServerEventBus = class {
     #listeners;
     #wildcardListeners;
@@ -159,7 +159,7 @@
     }
   };
 
-  // src/lib/server/logger.js
+  // server/internal/logger.js
   var ServerLogger = class {
     #eventBus;
     #minLevel;
@@ -351,7 +351,7 @@
     }
   };
 
-  // src/lib/server/auth.js
+  // server/internal/auth.js
   var ServerAuthManager = class {
     #eventBus;
     #logger;
@@ -616,7 +616,7 @@
     }
   };
 
-  // src/lib/server/controller.js
+  // server/internal/controller.js
   var ServerCentralController = class {
     #eventBus;
     #logger;

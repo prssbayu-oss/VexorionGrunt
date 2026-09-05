@@ -7,16 +7,16 @@ import { TestSuiteRunner } from './components/tests/TestSuiteRunner';
 import { RepoExplorer } from './components/repo/RepoExplorer';
 import { BenchmarkPanel } from './components/benchmark/BenchmarkPanel';
 import { RepoAuditPanel } from './components/audit/RepoAuditPanel';
-import { SimulatedConfig, SimulatedLogger, SimulatedVexorion } from './lib/vexorion-core';
+import { ClientSimulationEngine } from './services/simulationEngine';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('simulator');
   const [isHooked, setIsHooked] = useState<boolean>(true);
   const [, setVersionTick] = useState<number>(0);
 
-  // Initialize simulated Vexorion instance
-  const vexorion = useMemo(() => {
-    const config = new SimulatedConfig({
+  // Pure client-side simulation engine (Frontend-only service layer)
+  const engine = useMemo(() => {
+    return new ClientSimulationEngine({
       allowedTypes: ['success', 'fail', 'warn', 'error'],
       exceptions: ['security'],
       taskWhitelist: [],
@@ -24,9 +24,6 @@ export default function App() {
       verbose: false,
       suppressAll: false
     });
-    const logger = new SimulatedLogger(config);
-    logger.hook({ taskName: 'build' });
-    return new SimulatedVexorion(config, logger);
   }, []);
 
   const refreshState = useCallback(() => {
@@ -35,20 +32,20 @@ export default function App() {
 
   const handleToggleHook = () => {
     if (isHooked) {
-      vexorion.unhook();
+      engine.unhook();
       setIsHooked(false);
     } else {
-      vexorion.hook('build');
+      engine.hook('build');
       setIsHooked(true);
     }
     refreshState();
   };
 
-  const metrics = vexorion.getMetrics();
+  const metrics = engine.getMetrics();
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-200">
-      {/* 1. Navbar Component */}
+      {/* 1. Navbar UI Component */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -58,11 +55,11 @@ export default function App() {
         totalLogs={metrics.total}
       />
 
-      {/* 2. Main View Container (Strictly constrained against horizontal overflow) */}
+      {/* 2. Main View Container */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 overflow-x-hidden">
         {activeTab === 'simulator' && (
           <TerminalSimulator
-            vexorion={vexorion}
+            engine={engine}
             isHooked={isHooked}
             onToggleHook={handleToggleHook}
             onRefreshMetrics={refreshState}
@@ -71,7 +68,7 @@ export default function App() {
 
         {activeTab === 'config' && (
           <ConfigStudio
-            vexorion={vexorion}
+            engine={engine}
             onOptionsChange={refreshState}
           />
         )}
@@ -93,7 +90,7 @@ export default function App() {
         )}
       </main>
 
-      {/* 3. Footer Component */}
+      {/* 3. Footer UI Component */}
       <Footer />
     </div>
   );

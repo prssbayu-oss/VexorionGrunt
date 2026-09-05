@@ -1,68 +1,31 @@
-import React, { useState } from 'react';
+/**
+ * @file src/components/tests/TestSuiteRunner.tsx
+ * Pure UI/UX component for test suite visualization and execution control.
+ * Test harness execution and API mapping are handled cleanly by useTestSuiteRunner.
+ */
+
+import React from 'react';
 import { Play, RotateCcw, ShieldCheck, Server, Laptop, Terminal } from 'lucide-react';
-import { TestCaseResult } from '../../types';
-import { runVexorionTests } from '../../lib/test-runner';
 import { TestMetricsHeader } from './TestMetricsHeader';
 import { TestFilterBar } from './TestFilterBar';
 import { TestItemRow } from './TestItemRow';
+import { useTestSuiteRunner } from '../../hooks/useTestSuiteRunner';
 
 export const TestSuiteRunner: React.FC = () => {
-  const [results, setResults] = useState<TestCaseResult[]>([]);
-  const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [filter, setFilter] = useState<'all' | 'passed' | 'failed'>('all');
-  const [target, setTarget] = useState<'backend' | 'browser'>('backend');
-  const [backendMeta, setBackendMeta] = useState<{ passRate?: string; total?: number } | null>(null);
-
-  const handleRunTests = async () => {
-    setIsRunning(true);
-    setResults([]);
-    setBackendMeta(null);
-
-    if (target === 'backend') {
-      try {
-        const start = performance.now();
-        const res = await fetch('/api/vexorion/tests');
-        const data = await res.json();
-        const duration = Math.round(performance.now() - start);
-
-        if (Array.isArray(data.specs)) {
-          const mapped: TestCaseResult[] = data.specs.map((spec: any) => ({
-            id: spec.id,
-            name: `${spec.suite}: ${spec.name}`,
-            file: 'server/vexorion/test-suite.js',
-            passed: spec.passed,
-            durationMs: Math.max(1, Math.round(duration / data.specs.length)),
-            error: spec.passed ? undefined : spec.details?.message || 'Assertion failed'
-          }));
-          setResults(mapped);
-          setBackendMeta({ passRate: data.passRate, total: data.total });
-        }
-      } catch (err: any) {
-        // Fallback to browser if server error
-        const executed = runVexorionTests();
-        setResults(executed);
-      } finally {
-        setIsRunning(false);
-      }
-    } else {
-      setTimeout(() => {
-        const executed = runVexorionTests();
-        setResults(executed);
-        setIsRunning(false);
-      }, 250);
-    }
-  };
-
-  const total = results.length;
-  const passed = results.filter((r) => r.passed).length;
-  const failed = results.filter((r) => !r.passed).length;
-  const totalDuration = results.reduce((acc, curr) => acc + curr.durationMs, 0);
-
-  const filteredResults = results.filter((r) => {
-    if (filter === 'passed') return r.passed;
-    if (filter === 'failed') return !r.passed;
-    return true;
-  });
+  const {
+    results,
+    filteredResults,
+    isRunning,
+    filter,
+    setFilter,
+    target,
+    setTarget,
+    total,
+    passed,
+    failed,
+    totalDuration,
+    handleRunTests
+  } = useTestSuiteRunner();
 
   return (
     <div className="w-full max-w-full space-y-6 overflow-x-hidden">

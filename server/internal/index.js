@@ -1,5 +1,5 @@
 /**
- * @file src/lib/server/index.js
+ * @file server/internal/index.js
  * Central export index for internal server logic modules.
  */
 

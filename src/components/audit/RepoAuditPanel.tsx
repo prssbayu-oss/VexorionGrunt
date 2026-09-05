@@ -106,7 +106,7 @@ export const RepoAuditPanel: React.FC = () => {
           tokenInHistoryMessage: 'No GitHub personal access tokens or credentials found in git commit history.',
           promptTokenAdvisory: 'User provided token in prompt text. We strongly recommend rotating or revoking this token on GitHub after setup.',
           gitignoreCoverage: 'Protected: node_modules, dist, coverage, .env*, *.log, .DS_Store are properly excluded.',
-          demoCredentials: 'src/lib/server/auth.js contains in-memory mock admin & operator users with salted hash for simulation.',
+          demoCredentials: 'server/internal/auth.js contains in-memory mock admin & operator users with salted hash for simulation.',
           serverEncapsulation: 'Native JavaScript #private fields and private methods enforce complete memory isolation.'
         },
         cdnDistribution: [
@@ -259,7 +259,7 @@ export const RepoAuditPanel: React.FC = () => {
                 {
                   title: 'Private Methods Encapsulation',
                   status: 'PASSED',
-                  desc: 'Both server/vexorion and src/lib/server utilize native ECMAScript #private class fields preventing state leakage.',
+                  desc: 'Both server/vexorion and server/internal utilize native ECMAScript #private class fields preventing state leakage.',
                   details: '100% compliance with strict OOP encapsulation guidelines'
                 },
                 {
@@ -362,7 +362,7 @@ export const RepoAuditPanel: React.FC = () => {
           <div className="space-y-3">
             {[
               { category: 'Server Engine (/server/vexorion/)', count: 9, files: 'benchmark.js, cache.js, config.js, hooker.js, index.js, logger.js, pipeline.js, streamer.js, test-suite.js' },
-              { category: 'Internal Subsystems (/src/lib/server/)', count: 5, files: 'auth.js, controller.js, eventBus.js, logger.js, index.js' },
+              { category: 'Internal Subsystems (/server/internal/)', count: 5, files: 'auth.js, controller.js, eventBus.js, logger.js, index.js' },
               { category: 'CDN Distribution Artifacts (/cdn/)', count: 4, files: 'vexorion.js (26kB), vexorion.min.js (9.8kB), vexorion.esm.js (24kB), vexorion.esm.min.js (9.9kB)' },
               { category: 'React Studio UI (/src/components/)', count: 21, files: 'benchmark/*, config/*, layout/*, repo/*, simulator/*, tests/*, ui/*' },
               { category: 'Build & Workflows', count: 6, files: '.github/workflows/release.yml, server.ts, package.json, vite.config.ts, tsconfig.json, metadata.json' }

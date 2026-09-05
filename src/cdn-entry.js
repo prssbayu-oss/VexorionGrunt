@@ -4,10 +4,10 @@
  * Exposes Vexorion subsystem classes and singleton instance.
  */
 
-import { ServerCentralController, serverController } from './lib/server/controller.js';
-import { ServerEventBus } from './lib/server/eventBus.js';
-import { ServerLogger } from './lib/server/logger.js';
-import { ServerAuthManager } from './lib/server/auth.js';
+import { ServerCentralController, serverController } from '../server/internal/controller.js';
+import { ServerEventBus } from '../server/internal/eventBus.js';
+import { ServerLogger } from '../server/internal/logger.js';
+import { ServerAuthManager } from '../server/internal/auth.js';
 
 export {
   ServerCentralController,

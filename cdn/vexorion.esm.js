@@ -1,4 +1,4 @@
-// src/lib/server/eventBus.js
+// server/internal/eventBus.js
 var ServerEventBus = class {
   #listeners;
   #wildcardListeners;
@@ -158,7 +158,7 @@ var ServerEventBus = class {
   }
 };
 
-// src/lib/server/logger.js
+// server/internal/logger.js
 var ServerLogger = class {
   #eventBus;
   #minLevel;
@@ -350,7 +350,7 @@ var ServerLogger = class {
   }
 };
 
-// src/lib/server/auth.js
+// server/internal/auth.js
 var ServerAuthManager = class {
   #eventBus;
   #logger;
@@ -615,7 +615,7 @@ var ServerAuthManager = class {
   }
 };
 
-// src/lib/server/controller.js
+// server/internal/controller.js
 var ServerCentralController = class {
   #eventBus;
   #logger;

@@ -1,5 +1,5 @@
 /**
- * @file src/lib/server/controller.js
+ * @file server/internal/controller.js
  * Central Entry Point and Subsystem Orchestrator for Server Architecture.
  * Integrates ServerEventBus, ServerLogger, and ServerAuthManager.
  * Strictly uses private class fields and private methods (#) to enforce rigorous internal state encapsulation.
