@@ -1,0 +1,7 @@
+{
+  "name": "Vexorion - Grunt Log Suppressor",
+  "description": "Interactive playground, simulator, configuration studio, and documentation for Vexorion intelligent Grunt log suppressor.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
