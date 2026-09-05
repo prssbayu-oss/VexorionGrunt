@@ -21,12 +21,14 @@ export class VexorionConfigManager {
     this.#subscribers = new Set();
 
     this.#defaults = {
-      allowedTypes: ['ok', 'warn', 'error', 'subhead'],
+      allowedTypes: ['ok', 'warn', 'error', 'subhead', 'success', 'fail'],
       exceptions: ['security'],
       taskWhitelist: [],
       taskBlacklist: [],
       verbose: false,
       suppressAll: false,
+      autoRegister: true,
+      taskName: 'suppress',
       cacheCapacity: 500
     };
 
@@ -43,6 +45,35 @@ export class VexorionConfigManager {
    * @private
    */
   #validateAndNormalizeSchema(opts) {
+    const validations = [
+      { key: 'allowedTypes', type: 'array', message: 'must be an array of strings' },
+      { key: 'exceptions', type: 'array', message: 'must be an array of strings' },
+      { key: 'taskWhitelist', type: 'array', message: 'must be an array of strings' },
+      { key: 'taskBlacklist', type: 'array', message: 'must be an array of strings' },
+      { key: 'verbose', type: 'boolean', message: 'must be a boolean' },
+      { key: 'suppressAll', type: 'boolean', message: 'must be a boolean' },
+      { key: 'autoRegister', type: 'boolean', message: 'must be a boolean' },
+      { key: 'taskName', type: 'string', message: 'must be a string' }
+    ];
+
+    for (const validation of validations) {
+      if (opts[validation.key] !== undefined) {
+        const value = opts[validation.key];
+        const actualType = Array.isArray(value) ? 'array' : typeof value;
+        if (actualType !== validation.type) {
+          throw new Error(`Invalid config: ${validation.key} ${validation.message}. Got ${actualType}`);
+        }
+
+        if (validation.type === 'array' && Array.isArray(value)) {
+          for (const item of value) {
+            if (typeof item !== 'string') {
+              throw new Error(`Invalid config: ${validation.key} must contain only strings. Found ${typeof item}`);
+            }
+          }
+        }
+      }
+    }
+
     const clean = { ...this.#defaults };
 
     if (Array.isArray(opts.allowedTypes)) {
@@ -60,6 +91,8 @@ export class VexorionConfigManager {
 
     clean.verbose = Boolean(opts.verbose);
     clean.suppressAll = Boolean(opts.suppressAll);
+    clean.autoRegister = opts.autoRegister !== undefined ? Boolean(opts.autoRegister) : true;
+    clean.taskName = opts.taskName ? String(opts.taskName).trim() : 'suppress';
     clean.cacheCapacity = typeof opts.cacheCapacity === 'number' && opts.cacheCapacity > 0 ? opts.cacheCapacity : 500;
 
     return clean;
@@ -121,12 +154,12 @@ export class VexorionConfigManager {
 
     // 1. Critical exceptions ALWAYS pass regardless of suppressAll or filters
     if (this.#isExceptionType(normType)) {
-      return { allowed: true, reason: 'critical_exception' };
+      return { allowed: true, reason: 'exception' };
     }
 
     // 2. Suppress all mode silences everything non-exception
     if (this.#options.suppressAll) {
-      return { allowed: false, reason: 'suppress_all_active' };
+      return { allowed: false, reason: 'suppress_all' };
     }
 
     // 3. Task filter verification
@@ -233,8 +266,17 @@ export class VexorionConfigManager {
       taskBlacklist: [...this.#options.taskBlacklist],
       verbose: this.#options.verbose,
       suppressAll: this.#options.suppressAll,
+      autoRegister: this.#options.autoRegister,
+      taskName: this.#options.taskName,
       cacheCapacity: this.#options.cacheCapacity
     };
+  }
+
+  /**
+   * Alias for getSnapshot() to support consumer contracts
+   */
+  getAll() {
+    return this.getSnapshot();
   }
 
   /**
@@ -267,5 +309,39 @@ export class VexorionConfigManager {
    */
   getInternalCache() {
     return this.#cacheEngine;
+  }
+
+  // ===================== PROTECTED GATEWAYS FOR SUBCLASSES =====================
+
+  /**
+   * Protected gateway allowing subclasses (via inheritance) to read internal options
+   * @protected
+   */
+  _getInternalOptions() {
+    return { ...this.#options };
+  }
+
+  /**
+   * Protected gateway allowing subclasses to access the private cache engine
+   * @protected
+   */
+  _getInternalCacheEngine() {
+    return this.#cacheEngine;
+  }
+
+  /**
+   * Protected gateway to invoke private rule evaluation
+   * @protected
+   */
+  _evaluateAllowance(type, taskName) {
+    return this.#internalEvaluateAllowance(type, taskName);
+  }
+
+  /**
+   * Protected gateway to construct compound cache keys
+   * @protected
+   */
+  _buildCacheKey(type, taskName) {
+    return this.#buildCacheKey(type, taskName);
   }
 }

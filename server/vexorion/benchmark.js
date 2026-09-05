@@ -83,7 +83,7 @@ export class VexorionBenchmarkSuite {
    * @private
    */
   #measureMemoryDelta(startMem) {
-    const endMem = process.memoryUsage().heapUsed;
+    const endMem = typeof process !== 'undefined' && process.memoryUsage ? process.memoryUsage().heapUsed : 0;
     const diffBytes = Math.max(0, endMem - startMem);
     return {
       bytes: diffBytes,
@@ -139,7 +139,7 @@ export class VexorionBenchmarkSuite {
       this.#configManager.checkAllowanceDetailed(batch[i].type, batch[i].task);
     }
 
-    const startHeap = process.memoryUsage().heapUsed;
+    const startHeap = typeof process !== 'undefined' && process.memoryUsage ? process.memoryUsage().heapUsed : 0;
     const { latencies, suppressedCount, totalDurationMs } = this.#runEvaluationLoop(batch);
     const memDelta = this.#measureMemoryDelta(startHeap);
     const percentiles = this.#calculatePercentiles(latencies);

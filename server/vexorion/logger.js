@@ -37,8 +37,11 @@ export class VexorionLoggerEngine {
       total: 0,
       suppressed: 0,
       allowed: 0,
+      errors: 0,
       byType: {},
       byTask: {},
+      lastSuppressed: null,
+      lastAllowed: null,
       startTime: Date.now()
     };
   }
@@ -62,14 +65,16 @@ export class VexorionLoggerEngine {
   #recordTelemetry(type, taskName, allowed, reason) {
     this.#metrics.total++;
 
-    if (allowed) {
-      this.#metrics.allowed++;
-    } else {
-      this.#metrics.suppressed++;
-    }
-
     const t = String(type || 'writeln').toLowerCase();
     const task = String(taskName || 'default').toLowerCase();
+
+    if (allowed) {
+      this.#metrics.allowed++;
+      this.#metrics.lastAllowed = { type: t, task, time: Date.now() };
+    } else {
+      this.#metrics.suppressed++;
+      this.#metrics.lastSuppressed = { type: t, task, time: Date.now() };
+    }
 
     this.#metrics.byType[t] = (this.#metrics.byType[t] || 0) + 1;
     this.#metrics.byTask[task] = (this.#metrics.byTask[task] || 0) + 1;
@@ -241,7 +246,7 @@ export class VexorionLoggerEngine {
    */
   getMetrics() {
     const total = this.#metrics.total;
-    const suppressionRate = total === 0 ? '0.0%' : `${((this.#metrics.suppressed / total) * 100).toFixed(1)}%`;
+    const suppressionRate = total === 0 ? '0.00%' : `${((this.#metrics.suppressed / total) * 100).toFixed(2)}%`;
 
     return {
       ...this.#metrics,
@@ -267,11 +272,21 @@ export class VexorionLoggerEngine {
       total: 0,
       suppressed: 0,
       allowed: 0,
+      errors: 0,
       byType: {},
       byTask: {},
+      lastSuppressed: null,
+      lastAllowed: null,
       startTime: Date.now()
     };
     this.#history = [];
+  }
+
+  /**
+   * Alias for isHookActive() for contract compatibility
+   */
+  isHooked() {
+    return this.#isHooked;
   }
 
   /**
@@ -293,5 +308,39 @@ export class VexorionLoggerEngine {
    */
   isHookActive() {
     return this.#isHooked;
+  }
+
+  // ===================== PROTECTED GATEWAYS FOR SUBCLASSES =====================
+
+  /**
+   * Protected gateway for subclasses to append telemetry
+   * @protected
+   */
+  _recordTelemetry(type, taskName, allowed, reason) {
+    return this.#recordTelemetry(type, taskName, allowed, reason);
+  }
+
+  /**
+   * Protected gateway for subclasses to toggle muting
+   * @protected
+   */
+  _applyMutingState(shouldMute) {
+    this.#applyMutingState(shouldMute);
+  }
+
+  /**
+   * Protected gateway for subclasses to access metrics
+   * @protected
+   */
+  _getInternalMetrics() {
+    return { ...this.#metrics };
+  }
+
+  /**
+   * Protected gateway for subclasses to access history
+   * @protected
+   */
+  _getInternalHistory() {
+    return [...this.#history];
   }
 }

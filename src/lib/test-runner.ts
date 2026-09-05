@@ -1,5 +1,14 @@
 import { TestCaseResult } from '../types';
-import { SimulatedConfig, SimulatedLogger, SimulatedVexorion } from './vexorion-core';
+import {
+  SimulatedConfig,
+  SimulatedLogger,
+  SimulatedVexorion,
+  VexorionConfigManager,
+  VexorionLoggerEngine,
+  VexorionSystemInstance,
+  LRUCacheEngine,
+  HookerInterceptionCore
+} from './vexorion-core';
 
 export function runVexorionTests(): TestCaseResult[] {
   const results: TestCaseResult[] = [];
@@ -175,6 +184,37 @@ export function runVexorionTests(): TestCaseResult[] {
     if (meta.name !== 'vexorion') throw new Error('Package name mismatch');
     if (meta.version !== '2.1.0') throw new Error('Package version mismatch');
     if (meta.license !== 'MIT') throw new Error('License mismatch');
+  });
+
+  // --- Suite 4: Architecture & Inheritance Integrity ---
+  test('Inheritance Architecture', 'SimulatedConfig must strictly inherit from VexorionConfigManager', () => {
+    const config = new SimulatedConfig();
+    if (!(config instanceof VexorionConfigManager)) {
+      throw new Error('SimulatedConfig must be an instance of VexorionConfigManager via inheritance');
+    }
+    if (!(config.getInternalCache() instanceof LRUCacheEngine)) {
+      throw new Error('Inherited config should provide LRUCacheEngine instance');
+    }
+  });
+
+  test('Inheritance Architecture', 'SimulatedLogger must strictly inherit from VexorionLoggerEngine', () => {
+    const config = new SimulatedConfig();
+    const logger = new SimulatedLogger(config);
+    if (!(logger instanceof VexorionLoggerEngine)) {
+      throw new Error('SimulatedLogger must be an instance of VexorionLoggerEngine via inheritance');
+    }
+    if (!(logger.getInternalHooker() instanceof HookerInterceptionCore)) {
+      throw new Error('Inherited logger should provide HookerInterceptionCore instance');
+    }
+  });
+
+  test('Inheritance Architecture', 'SimulatedVexorion must strictly inherit from VexorionSystemInstance', () => {
+    const config = new SimulatedConfig();
+    const logger = new SimulatedLogger(config);
+    const vexorion = new SimulatedVexorion(config, logger);
+    if (!(vexorion instanceof VexorionSystemInstance)) {
+      throw new Error('SimulatedVexorion must be an instance of VexorionSystemInstance via inheritance');
+    }
   });
 
   return results;

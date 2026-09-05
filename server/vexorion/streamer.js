@@ -197,6 +197,9 @@ export class VexorionRealtimeDaemon {
     this.#timerId = setTimeout(() => {
       this.#executeTick();
     }, this.#intervalMs);
+    if (this.#timerId && typeof this.#timerId.unref === 'function') {
+      this.#timerId.unref();
+    }
   }
 
   // ===================== PUBLIC API =====================
