@@ -5,14 +5,19 @@ import { SAMPLE_TASKS } from '../../data/sample-tasks';
 interface PipelineSelectorProps {
   selectedPresetId: string;
   onSelectPreset: (id: string) => void;
-  activePreset: GruntTaskPreset;
+  activePreset?: GruntTaskPreset;
 }
 
 export const PipelineSelector: React.FC<PipelineSelectorProps> = ({
   selectedPresetId,
   onSelectPreset,
-  activePreset
+  activePreset: providedActivePreset
 }) => {
+  const activePreset =
+    providedActivePreset ||
+    SAMPLE_TASKS.find((p) => p.id === selectedPresetId) ||
+    SAMPLE_TASKS[0];
+
   return (
     <div className="w-full max-w-full bg-stone-900 border border-stone-800 rounded-xl p-4 shadow-sm">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">

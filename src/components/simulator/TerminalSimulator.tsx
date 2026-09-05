@@ -85,11 +85,9 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
       {/* 2. Pipeline / Task Preset Selector (Manual Mode) */}
       {!isAutoStream && (
         <PipelineSelector
-          presets={SAMPLE_TASKS}
           selectedPresetId={selectedPresetId}
           onSelectPreset={(id) => setSelectedPresetId(id)}
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
+          activePreset={activePreset}
         />
       )}
 
@@ -116,23 +114,22 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
       {!isAutoStream && (
         <PlaybackControls
           isPlaying={isPlaying}
-          currentIndex={currentIndex}
-          totalLogs={processedLogs.length}
-          speed={speed}
-          isHooked={isHooked}
-          showInjector={showInjector}
-          onPlay={handlePlay}
-          onPause={handlePause}
+          onTogglePlay={isPlaying ? handlePause : handlePlay}
           onStepNext={handleStepForward}
           onCompleteAll={() => {
-            // Step to end
             while (currentIndex < processedLogs.length) {
               handleStepForward();
             }
           }}
           onReset={handleReset}
-          onChangeSpeed={setSpeed}
-          onToggleInjector={() => setShowInjector(!showInjector)}
+          isComplete={isComplete}
+          canStep={currentIndex < processedLogs.length}
+          speed={speed}
+          setSpeed={setSpeed}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          showInjector={showInjector}
+          setShowInjector={setShowInjector}
         />
       )}
 
@@ -154,7 +151,7 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
             variant="raw"
             logs={visibleLogs}
             allEmittedLogs={visibleLogs}
-            command={isAutoStream ? 'node daemon.js --stream' : activePreset.command}
+            command={isAutoStream ? 'node daemon.js --stream' : (activePreset?.command || 'grunt')}
             isHooked={isHooked}
             isComplete={isComplete}
             totalPresetLength={isAutoStream ? visibleLogs.length : processedLogs.length}
@@ -169,7 +166,7 @@ export const TerminalSimulator: React.FC<TerminalSimulatorProps> = ({
             variant="clean"
             logs={visibleLogs.filter((l) => !l.suppressed)}
             allEmittedLogs={visibleLogs}
-            command={isAutoStream ? 'node daemon.js --stream --hook' : activePreset.command}
+            command={isAutoStream ? 'node daemon.js --stream --hook' : (activePreset?.command || 'grunt')}
             isHooked={isHooked}
             isComplete={isComplete}
             totalPresetLength={isAutoStream ? visibleLogs.length : processedLogs.length}
