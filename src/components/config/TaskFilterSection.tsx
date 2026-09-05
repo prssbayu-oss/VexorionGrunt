@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 
 interface TaskFilterSectionProps {
-  taskWhitelist: string[];
-  taskBlacklist: string[];
+  taskWhitelist?: string[];
+  whitelist?: string[];
+  taskBlacklist?: string[];
+  blacklist?: string[];
   onAddWhitelist: (task: string) => void;
   onRemoveWhitelist: (task: string) => void;
   onAddBlacklist: (task: string) => void;
@@ -11,13 +13,17 @@ interface TaskFilterSectionProps {
 }
 
 export const TaskFilterSection: React.FC<TaskFilterSectionProps> = ({
-  taskWhitelist,
-  taskBlacklist,
+  taskWhitelist: propTaskWhitelist,
+  whitelist: propWhitelist,
+  taskBlacklist: propTaskBlacklist,
+  blacklist: propBlacklist,
   onAddWhitelist,
   onRemoveWhitelist,
   onAddBlacklist,
   onRemoveBlacklist
 }) => {
+  const taskWhitelist = propTaskWhitelist || propWhitelist || [];
+  const taskBlacklist = propTaskBlacklist || propBlacklist || [];
   const [newWhitelistTask, setNewWhitelistTask] = useState('');
   const [newBlacklistTask, setNewBlacklistTask] = useState('');
 

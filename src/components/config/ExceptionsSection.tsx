@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { Sparkles, X } from 'lucide-react';
 
 interface ExceptionsSectionProps {
-  exceptions: string[];
+  exceptions?: string[];
   onAddException: (type: string) => void;
   onRemoveException: (type: string) => void;
 }
 
 export const ExceptionsSection: React.FC<ExceptionsSectionProps> = ({
-  exceptions,
+  exceptions: propExceptions = [],
   onAddException,
   onRemoveException
 }) => {
+  const exceptions = propExceptions || [];
   const [newException, setNewException] = useState('');
 
   const handleAdd = (e: React.FormEvent) => {

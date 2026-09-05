@@ -7,8 +7,8 @@ import { LogTypeBadge } from '../ui/Badge';
 interface TerminalWindowProps {
   title: string;
   variant: 'raw' | 'clean';
-  logs: ProcessedLogItem[];
-  allEmittedLogs: ProcessedLogItem[];
+  logs?: ProcessedLogItem[];
+  allEmittedLogs?: ProcessedLogItem[];
   command: string;
   isHooked: boolean;
   isComplete: boolean;
@@ -19,14 +19,16 @@ interface TerminalWindowProps {
 export const TerminalWindow: React.FC<TerminalWindowProps> = ({
   title,
   variant,
-  logs,
-  allEmittedLogs,
+  logs: propLogs = [],
+  allEmittedLogs: propAllEmittedLogs = [],
   command,
   isHooked,
   isComplete,
   totalPresetLength,
   latestSuppressedLog
 }) => {
+  const logs = propLogs || [];
+  const allEmittedLogs = propAllEmittedLogs || [];
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showMutedGhostsInClean, setShowMutedGhostsInClean] = useState<boolean>(false);
 

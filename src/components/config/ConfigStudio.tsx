@@ -59,8 +59,10 @@ export const ConfigStudio: React.FC<ConfigStudioProps> = ({ engine, onOptionsCha
         {/* Right Column: Task Filters & Switches */}
         <div className="space-y-6">
           <TaskFilterSection
-            whitelist={currentConfig.taskWhitelist}
-            blacklist={currentConfig.taskBlacklist}
+            taskWhitelist={currentConfig.taskWhitelist || []}
+            taskBlacklist={currentConfig.taskBlacklist || []}
+            whitelist={currentConfig.taskWhitelist || []}
+            blacklist={currentConfig.taskBlacklist || []}
             onAddWhitelist={handleAddWhitelist}
             onRemoveWhitelist={handleRemoveWhitelist}
             onAddBlacklist={handleAddBlacklist}
@@ -76,7 +78,7 @@ export const ConfigStudio: React.FC<ConfigStudioProps> = ({ engine, onOptionsCha
       </div>
 
       {/* Code Export & Real-Time JSON Panel */}
-      <CodeExportPanel config={currentConfig} />
+      <CodeExportPanel currentConfig={currentConfig} config={currentConfig} />
     </div>
   );
 };

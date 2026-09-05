@@ -3,12 +3,24 @@ import { Copy, Check } from 'lucide-react';
 import { VexorionOptions } from '../../types';
 
 interface CodeExportPanelProps {
-  currentConfig: VexorionOptions;
+  currentConfig?: VexorionOptions;
+  config?: VexorionOptions;
 }
 
-export const CodeExportPanel: React.FC<CodeExportPanelProps> = ({ currentConfig }) => {
+export const CodeExportPanel: React.FC<CodeExportPanelProps> = ({ currentConfig: propConfig, config }) => {
   const [exportFormat, setExportFormat] = useState<'gruntfile' | 'json' | 'cli'>('gruntfile');
   const [copiedTab, setCopiedTab] = useState<string | null>(null);
+
+  const currentConfig: VexorionOptions = propConfig || config || {
+    allowedTypes: ['success', 'fail', 'warn', 'error', 'ok'],
+    exceptions: ['security'],
+    taskWhitelist: [],
+    taskBlacklist: [],
+    verbose: false,
+    suppressAll: false,
+    taskName: 'build',
+    autoRegister: true
+  };
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -18,13 +30,13 @@ export const CodeExportPanel: React.FC<CodeExportPanelProps> = ({ currentConfig 
 
   const generateGruntfileSnippet = () => {
     const optsObj: Record<string, unknown> = {
-      allowedTypes: currentConfig.allowedTypes,
-      exceptions: currentConfig.exceptions,
-      verbose: currentConfig.verbose,
-      suppressAll: currentConfig.suppressAll
+      allowedTypes: currentConfig.allowedTypes || [],
+      exceptions: currentConfig.exceptions || [],
+      verbose: Boolean(currentConfig.verbose),
+      suppressAll: Boolean(currentConfig.suppressAll)
     };
-    if (currentConfig.taskWhitelist.length > 0) optsObj.taskWhitelist = currentConfig.taskWhitelist;
-    if (currentConfig.taskBlacklist.length > 0) optsObj.taskBlacklist = currentConfig.taskBlacklist;
+    if (currentConfig.taskWhitelist && currentConfig.taskWhitelist.length > 0) optsObj.taskWhitelist = currentConfig.taskWhitelist;
+    if (currentConfig.taskBlacklist && currentConfig.taskBlacklist.length > 0) optsObj.taskBlacklist = currentConfig.taskBlacklist;
 
     return `// Gruntfile.js
 module.exports = function(grunt) {
@@ -47,10 +59,10 @@ module.exports = function(grunt) {
     let cmd = 'npx vexorion';
     if (currentConfig.verbose) cmd += ' -v';
     if (currentConfig.suppressAll) cmd += ' -q';
-    if (currentConfig.allowedTypes.length > 0) {
+    if (currentConfig.allowedTypes && currentConfig.allowedTypes.length > 0) {
       cmd += ` -t ${currentConfig.allowedTypes.join(',')}`;
     }
-    if (currentConfig.exceptions.length > 0) {
+    if (currentConfig.exceptions && currentConfig.exceptions.length > 0) {
       cmd += ` -e ${currentConfig.exceptions.join(',')}`;
     }
     cmd += ' build:prod';

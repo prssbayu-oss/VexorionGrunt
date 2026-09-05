@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { Tag, X } from 'lucide-react';
 
 interface AllowedTypesSectionProps {
-  allowedTypes: string[];
+  allowedTypes?: string[];
   onAddType: (type: string) => void;
   onRemoveType: (type: string) => void;
 }
 
 export const AllowedTypesSection: React.FC<AllowedTypesSectionProps> = ({
-  allowedTypes,
+  allowedTypes: propAllowedTypes = [],
   onAddType,
   onRemoveType
 }) => {
+  const allowedTypes = propAllowedTypes || [];
   const [newAllowedType, setNewAllowedType] = useState('');
 
   const handleAdd = (e: React.FormEvent) => {
